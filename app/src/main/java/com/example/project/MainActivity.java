@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         loginButton.setOnClickListener(v -> {
             name = nameInput.getText().toString();
             System.out.println(name);
+            password = encryptPassword(passwordInput.getText().toString());
 
             if (checkIfUserExists(true)) nextActivityLogin();
         });
@@ -90,5 +91,40 @@ public class MainActivity extends AppCompatActivity {
         }
         Log.e("Error:", "Something did not go well in checkIfUserExists");
         return false;
+    }
+    // Checks if the given password follows principals of a strong password
+    private boolean checkPassword(String text){
+        boolean hasUpperCase = false, hasSpecial = false, hasNumber = false;
+        Set<Character> set = new HashSet<>(Arrays.asList('!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '+'));
+
+        char[] arr = text.toCharArray();
+        if (arr.length < 12) {
+            showToast("Password should be at least 12 characters long!");
+            return false;
+        }
+
+        for (char c : arr) {
+            if (Character.isUpperCase(c)) hasUpperCase = true;
+            if (set.contains(c)) hasSpecial = true;
+            if (Character.isDigit(c)) hasNumber = true;
+        }
+        if (hasUpperCase && hasSpecial && hasNumber) return true;
+        else {showToast("Password should contain at least one of each: upper case letter, special character and number"); return false;}
+
+
+    }
+    // Encrypts the given password using SHA-512 + Salt.
+    private byte[] encryptPassword(String text){
+        String salt = "Ö/=&@$¤ä";
+
+        byte[] inputData = (text + salt).getBytes();
+        byte[] outputData = new byte[0];
+
+        try {
+            outputData = PasswordEncryption.encryptSHA(inputData, "SHA-512");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return  outputData;
     }
 }

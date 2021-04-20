@@ -1,5 +1,7 @@
 package com.example.project;
 
+import android.graphics.Bitmap;
+
 public class User {
 
     public User(String username, byte[] password)
@@ -10,12 +12,13 @@ public class User {
 
     private String username;
     private byte[] password;
-    private String birthday;
+    private String dateOfBirth;
     private float height;
     private float weight;
     private String gender;
     private String dietaryInfo;
     private String smokingInfo;
+    private Bitmap profilePicture;
 
     public String getUsername()
     {
@@ -35,13 +38,13 @@ public class User {
         this.password = password;
     }
 
-    public String getBirthday()
+    public String getDateOfBirth()
     {
-        return birthday;
+        return dateOfBirth;
     }
-    public void setBirthday(String birthday)
+    public void setDateOfBirth(String dateOfBirth)
     {
-        this.birthday = birthday;
+        this.dateOfBirth = dateOfBirth;
     }
 
     public float getHeight()
@@ -88,4 +91,7 @@ public class User {
     {
         this.smokingInfo = smokingInfo;
     }
+
+    public Bitmap getProfilePicture(){return this.profilePicture;}
+    public void setProfilePicture(Bitmap profilePicture){this.profilePicture = profilePicture;}
 }

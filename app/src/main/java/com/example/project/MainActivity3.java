@@ -12,6 +12,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -22,6 +23,7 @@ import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -31,6 +33,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 import java.net.URI;
 import java.security.NoSuchAlgorithmException;
@@ -173,7 +177,7 @@ public class MainActivity3 extends AppCompatActivity {
                 if(!password.equals(passwordRepeat)){
                     showToast("Passwords do not match!");
                 }
-                else if(password.equals(passwordRepeat)) {
+                else {
                     User newUser = new User(name, encryptPassword(password));
                     newUser.setDateOfBirth(dateOfBirth);
                     newUser.setHeight(height);
@@ -182,6 +186,9 @@ public class MainActivity3 extends AppCompatActivity {
                     newUser.setDietaryInfo(dietaryInfo);
                     newUser.setSmokingInfo(smokingInfo);
                     newUser.setProfilePicture(profilePicture);
+                    MainActivity.userArrayList.add(newUser);
+                    showToast("User created successfully!");
+                    saveData();
                     SecondActivity();
                 }
             }
@@ -275,7 +282,8 @@ public class MainActivity3 extends AppCompatActivity {
         }
 
         if(checkIfNameExists()){
-            return true;
+            showToast("The user name is taken!");
+            return false;
         }
 
         if (checkPassword(passwordInput.getText().toString())){
@@ -284,9 +292,15 @@ public class MainActivity3 extends AppCompatActivity {
     }
 
     private boolean checkIfNameExists() {
-        //To-Do after saving has been implemented.
-        //returns true if name has not been taken, else returns false.
-        return true;
+        for(int i=0; i<MainActivity.userArrayList.size(); i++)
+        {
+            User tempUser = MainActivity.userArrayList.get(i);
+            if(tempUser.getUsername().equals(name))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void SecondActivity(){
@@ -332,5 +346,14 @@ public class MainActivity3 extends AppCompatActivity {
             e.printStackTrace();
         }
         return  outputData;
+    }
+    // Handles data saving
+    private void saveData(){
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(MainActivity.userArrayList);
+        editor.putString("user list", json);
+        editor.apply();
     }
 }

@@ -275,7 +275,7 @@ public class MainActivity3 extends AppCompatActivity {
         }
 
         if(checkIfNameExists()){
-            return false;
+            return true;
         }
 
         if (checkPassword(passwordInput.getText().toString())){

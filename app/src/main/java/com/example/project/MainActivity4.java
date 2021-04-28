@@ -42,6 +42,8 @@ public class MainActivity4 extends AppCompatActivity {
     Spinner dietSpinner;
     Spinner carbonSpinner;
 
+    public MainActivity2 instance;
+
 
 
 
@@ -110,8 +112,27 @@ public class MainActivity4 extends AppCompatActivity {
     private void SecondActivity(){
         Intent intent = new Intent(MainActivity4.this, MainActivity2.class);
         this.startActivity(intent);
+        getData();
+
+
     }
 
+    public String[] getData(){
+        String[] data = new String[11];
+        data[0] = dietSpinner.getSelectedItem().toString();
+        data[1] = carbonSpinner.getSelectedItem().toString();
+        data[2] = beefEditText.getText().toString();
+        data[3] = fishEditText.getText().toString();
+        data[4] = porkEditText.getText().toString();
+        data[5] = dairyEditText.getText().toString();
+        data[6] = cheeseEditText.getText().toString();
+        data[7] = riceEditText.getText().toString();
+        data[8] = eggEditText.getText().toString();
+        data[9] = restaurantEditText.getText().toString();
 
+        return data;
+
+
+    }
 
 }

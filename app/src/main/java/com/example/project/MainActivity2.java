@@ -20,8 +20,63 @@ import org.json.JSONObject;
 
 public class MainActivity2 extends AppCompatActivity {
 
+    public MainActivity4 instance;
+
     TextView Text_data;
-    String url = "https://ilmastodieetti.ymparisto.fi/ilmastodieetti/calculatorapi/v1/FoodCalculator?query.diet=omnivore&query.lowCarbonPreference=true&query.beefLevel=111&query.fishLevel=111&query.porkPoultryLevel=111&query.dairyLevel=111&query.cheeseLevel=111&query.riceLevel=111&query.eggLevel=111&query.winterSaladLevel=111&query.restaurantSpending=132&api_key=10";
+
+    int beefAmount = 0;
+    int fishAmount = 0;
+    int porkAmount = 0;
+    int dairyAmount = 0;
+    int cheeseAmount = 0;
+    int riceAmount = 0;
+    int eggAmount = 0;
+    int saladAmount = 0;
+    int restaurantAmount = 0;
+    Boolean carbonPreference = false;
+    String dietChoice = "omnivore";
+
+
+
+
+
+
+    public void setData1(){
+
+        String[] data = instance.getData();
+
+        if (data[1].equals("Yes")){
+            carbonPreference = true;
+        }
+        else{
+            carbonPreference = false;
+        }
+
+        if (data[0].equals("Vegetarian") ){
+            dietChoice = "vegetarian";
+        }
+        else if (data[0].equals("Vegan")) {
+            dietChoice = "vegan";
+        }
+        else{
+            dietChoice = "omnivore";
+        }
+
+        beefAmount = Integer.parseInt(data[2]);
+        fishAmount = Integer.parseInt(data[3]);
+        porkAmount = Integer.parseInt(data[4]);
+        dairyAmount = Integer.parseInt(data[5]);
+        cheeseAmount = Integer.parseInt(data[6]);
+        riceAmount = Integer.parseInt(data[7]);
+        eggAmount = Integer.parseInt(data[8]);
+        restaurantAmount = Integer.parseInt(data[9]);
+
+
+    }
+
+    String url = "https://ilmastodieetti.ymparisto.fi/ilmastodieetti/calculatorapi/v1/FoodCalculator?query.diet="+dietChoice+"&query.lowCarbonPreference="+carbonPreference+"&query.beefLevel="+beefAmount+"&query.fishLevel="+fishAmount+"&query.porkPoultryLevel="+porkAmount+"&query.dairyLevel="+dairyAmount+"&query.cheeseLevel="+cheeseAmount+"&query.riceLevel="+riceAmount+"&query.eggLevel="+eggAmount+"&query.winterSaladLevel="+saladAmount+"&query.restaurantSpending="+restaurantAmount+"&api_key=10";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +101,12 @@ public class MainActivity2 extends AppCompatActivity {
         showGraphButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Instantiate the RequestQueue.
+                // Instantiate everything.
 
+                    setData1();
                     getResponse();
+                //Text_data.setText(url);
+
 
             }
         });
@@ -92,7 +150,7 @@ public class MainActivity2 extends AppCompatActivity {
                     double restaurantAmount = response.getDouble("Restaurant");
                     double totalAmount = response.getDouble("Total");
 
-                    Toast.makeText(MainActivity2.this, Double.toString(dairyAmount), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity2.this, Double.toString(dairyAmount), Toast.LENGTH_SHORT).show();
                     Text_data.setText("Dairy: "+Double.toString(dairyAmount)+"\nMeat: "+Double.toString(meatAmount)+
                             "\nPlant: "+Double.toString(plantAmount)+"\nRestaurant: "+Double.toString(restaurantAmount)+
                             "\nTotal:"+Double.toString(totalAmount));
@@ -106,7 +164,7 @@ public class MainActivity2 extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Text_data.setText("That didn't work!");
+                //Text_data.setText("That didn't work!");
             }
 
         });

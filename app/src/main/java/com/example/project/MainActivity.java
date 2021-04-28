@@ -1,6 +1,7 @@
 package com.example.project;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +12,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,12 +33,14 @@ public class MainActivity extends AppCompatActivity {
     Button loginButton;
     TextView registerButton;
 
-    private final ArrayList<User> userArrayList = new ArrayList<>();
+    public static ArrayList<User> userArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        loadData();
 
         nameInput = findViewById(R.id.editTextTextPersonName);
         passwordInput = findViewById(R.id.editTextTextPassword);
@@ -47,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
             System.out.println(name);
             password = encryptPassword(passwordInput.getText().toString());
 
-            if (checkIfUserExists(true)) nextActivityLogin();
+            if (checkIfUserExists()) nextActivityLogin();
         });
 
         registerButton.setOnClickListener(v -> {
@@ -69,49 +76,24 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
     }
 
-    private boolean checkIfUserExists(boolean isLogin){
+    private boolean checkIfUserExists(){
         for(int i=0; i<userArrayList.size(); i++)
         {
             User tempUser = userArrayList.get(i);
             if(tempUser.getUsername().equals(name))
             {
-                if(Arrays.equals(tempUser.getPassword(), password) && isLogin)
+                if(Arrays.equals(tempUser.getPassword(), password))
                 {
                     return true;
                 }else
                 {
-                    if(isLogin) {showToast("Login failed: password is wrong!"); return false;}
-                    else if (!isLogin) {showToast("User already exists!"); return true;}
+                    showToast("Login failed: password is wrong!"); return false;
                 }
             }
-            else {
-                if(isLogin) {showToast("Login failed: user does not exist!"); return false;}
-                else if(!isLogin) return false;
-            }
         }
-        Log.e("Error:", "Something did not go well in checkIfUserExists");
+
+        showToast("Login failed: user does not exist!");
         return false;
-    }
-    // Checks if the given password follows principals of a strong password
-    private boolean checkPassword(String text){
-        boolean hasUpperCase = false, hasSpecial = false, hasNumber = false;
-        Set<Character> set = new HashSet<>(Arrays.asList('!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '+'));
-
-        char[] arr = text.toCharArray();
-        if (arr.length < 12) {
-            showToast("Password should be at least 12 characters long!");
-            return false;
-        }
-
-        for (char c : arr) {
-            if (Character.isUpperCase(c)) hasUpperCase = true;
-            if (set.contains(c)) hasSpecial = true;
-            if (Character.isDigit(c)) hasNumber = true;
-        }
-        if (hasUpperCase && hasSpecial && hasNumber) return true;
-        else {showToast("Password should contain at least one of each: upper case letter, special character and number"); return false;}
-
-
     }
     // Encrypts the given password using SHA-512 + Salt.
     private byte[] encryptPassword(String text){
@@ -126,5 +108,17 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return  outputData;
+    }
+
+    private void loadData(){
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("user list", null);
+        Type type = new TypeToken<ArrayList<User>>() {}.getType();
+        userArrayList = gson.fromJson(json, type);
+
+        if (userArrayList == null){
+            userArrayList = new ArrayList<>();
+        }
     }
 }

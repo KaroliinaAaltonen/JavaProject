@@ -1,51 +1,22 @@
 package com.example.project;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
-import android.util.Xml;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.StringTokenizer;
-import java.util.stream.Collectors;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 public class MainActivity2 extends AppCompatActivity {
 
@@ -67,16 +38,7 @@ public class MainActivity2 extends AppCompatActivity {
             }
         });
 
-
-
-
         Text_data = (TextView) findViewById((R.id.DataTextview));
-        //parseXML();
-
-
-
-
-
 
         Button showGraphButton;
         showGraphButton = (Button) findViewById(R.id.btn_ShowGraph);
@@ -111,7 +73,7 @@ public class MainActivity2 extends AppCompatActivity {
         Intent intent = new Intent(MainActivity2.this, MainActivity4.class);
         this.startActivity(intent);
     }
-    
+
 
     private void getResponse() {
 
@@ -121,8 +83,6 @@ public class MainActivity2 extends AppCompatActivity {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-
-
 
                 try {
 
@@ -142,10 +102,6 @@ public class MainActivity2 extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-
-
-
-
             }
         }, new Response.ErrorListener() {
             @Override
@@ -156,13 +112,6 @@ public class MainActivity2 extends AppCompatActivity {
         });
         queue.add(request);
     }
-
-
-
-                // Add the request to the RequestQueue.
-
-
-
 
 
 }
